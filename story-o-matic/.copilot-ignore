@@ -1,0 +1,21 @@
+# Environment files
+.env
+.env.*
+*.local
+
+# API keys and secrets
+**/config/secrets.*
+**/credentials.*
+**/key.*
+
+# Any file containing sensitive keywords
+**/*password*
+**/*secret*
+**/*key*
+**/*token*
+**/*credential*
+
+# Specific sensitive paths
+**/config/sensitive/
+**/secrets/
+**/private/
