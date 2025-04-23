@@ -55,6 +55,7 @@ Extract and format install/run instructions from `README`, `setup.py`, `package.
 - Prerequisites  
 - Install steps  
 - How to launch or run in dev mode
+- .env file configuration (if any)
 
 Use code blocks.
 

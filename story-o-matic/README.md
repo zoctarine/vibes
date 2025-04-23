@@ -44,7 +44,7 @@ Welcome to the STORY-O-MATIC, a precision-engineered narrative generator designe
 ### Installation  
 ```bash
 # Clone the repository
-git clone https://github.com/your-username/story-o-matic.git
+git clone https://github.com/zoctarine/vibes.git
 
 # Navigate to the project directory
 cd story-o-matic
