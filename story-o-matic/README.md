@@ -18,7 +18,7 @@ Welcome to the STORY-O-MATIC, a precision-engineered narrative generator designe
 ---
 
 ## Tools Used  
-- **AI Assistance:** bolt.new
+- **AI Assistance:** bolt.new (80%), then continue with Copilot with Claude Sonet 3.5 (10%)
 - **Design:** Tailwind CSS  
 - **Development:** Vite, TypeScript  
 - **Organization:** Local storage for story persistence  
