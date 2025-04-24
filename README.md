@@ -13,10 +13,11 @@ This is a playground for exploring what it's like to:
 
 In the Vibes/ folder, you'll find a ragtag collection of apps:
 
-- story-o-matic: a choose your own adventure style of infinite storytelling app
-- draft-editor: a draft for a distracton free minimalistic editor for writing novels with mardown (and use codemirror editor)
+- [story-o-matic](/story-o-matic): a choose your own adventure style of infinite storytelling app
+- [draft-editor](/draft-editor): a draft for a distracton free minimalistic editor for writing novels with mardown (and use codemirror editor)
+- [prompt-enhancer](/prompt-enhancer): a small MCP server for enahncing prompts
 - fiction-writer/ tools for writing fiction
-    - text-statistics: small MCP server to count words, pages, reading times, etc
+    - [text-statistics](/fiction-writer/text-statistics): small MCP server to count words, pages, reading times, etc
 
 # Why?
 
