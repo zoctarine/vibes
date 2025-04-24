@@ -7,8 +7,8 @@ What if stories were generated while you read them? And are finished when you wa
 
 ---
 
-## The Vibe  
-Welcome to the STORY-O-MATIC, a precision-engineered narrative generator designed to craft interactive, branching stories. It’s storytelling, ... infinite storyteling
+## The Result  
+A narrative generator (inspired by choose your own adventure books) designed to craft interactive, branching stories. It’s storytelling, ... infinite storyteling.
 
 ---
 
