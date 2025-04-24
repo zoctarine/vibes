@@ -19,6 +19,19 @@ In the Vibes/ folder, you'll find a random collection of apps:
 - fiction-writer/ tools for writing fiction
     - [text-statistics](/fiction-writer/text-statistics): small MCP server to count words, pages, reading times, etc
 
+# Tools
+
+I experiment with (in alphabetical order):
+
+- [Bolt.new](https://bolt.new/)
+- [ChatGPT](https://chatgpt.com)
+- [Claude Code](https://docs.anthropic.com/en/docs/agents-and-tools/claude-code/overview)
+- [Claude Desktop](https://claude.ai/download)
+- [Cursor](https://www.cursor.com/)
+- [GitHub Copilot](https://github.com/features/copilot)
+- [JetBrains AI](https://www.jetbrains.com/ai/)
+- [JetBrains Junie](https://www.jetbrains.com/junie/)
+
 # Why?
 
 Because the future showed up early, and instead of flying cars, it brought ... agents
