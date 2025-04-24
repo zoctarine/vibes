@@ -19,7 +19,7 @@ A Model Context Protocol (MCP) server that enhances prompts by applying best sof
 - Helpful: console.anthropic.com/workbench
 
 > [!TIP]
-> use the files ./resources/prompts/mcp files as initial prompt to your ai assistent, to properly help with mcp file generation
+> use the [Preparing Documentation](https://modelcontextprotocol.io/tutorials/building-mcp-with-llms#preparing-the-documentation) guide to help your ai assistent understand MCP better
 
 ## Setup
 
