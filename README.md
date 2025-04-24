@@ -2,12 +2,12 @@
 
 Vibes are a set of small, often strange, sometimes-useful, and frequently confused apps and tools. They all share one thing in common:
 
-    They're made by collaborating with AI — not just as a tool, but as a co-developer.
+`They're made by collaborating with AI — not just as a tool, but as a co-developer.`
 
 This is a playground for exploring what it's like to:
-- generating ideas with AI
-- writing most (or all) of the code through AI guidance
-- only stepping in when AI can't solve it or goes in a wrong direction
+- rapidly turn ideas into working prototypes
+- writing most (or all?) of the code through AI guidance
+- have fun while coding
 
 # What's inside
 
@@ -32,6 +32,11 @@ I experiment with (in alphabetical order):
 - [JetBrains AI](https://www.jetbrains.com/ai/)
 - [JetBrains Junie](https://www.jetbrains.com/junie/)
 
+
 # Why?
 
 Because the future showed up early, and instead of flying cars, it brought ... agents
+
+# License
+
+MIT
