@@ -17,7 +17,7 @@ A simple text editor with Codemirror, that let's you edit scenes, chapters, reor
 TBD [Live Demo](https://example.com)
 
 ## Tools Used
-- Bolt.new (99% of the code)
+- Bolt.new (80%), Cursor(15%)
 - Tailwind CSS
 - Supabase (login and story)
 - Vite
