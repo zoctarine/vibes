@@ -4,12 +4,12 @@
 What if... i can make a simple editor with code-mirror for my writing needs
 
 
-## The Vibe
-Draft Editor is your trusty companion for crafting, organizing, and refining your creative projects. Whether you're penning the next great novel or managing a complex document hierarchy, this tool ensures your ideas are structured and accessible.
+## The Result
+A simple text editor with Codemirror, that let's you edit scenes, chapters, reorder and compile them to a complete document. It also has a fullscreen distraction free view.
 
 
 ## Live Demo
-Replace this placeholder with your live demo link: [Live Demo](https://example.com)
+TBD [Live Demo](https://example.com)
 
 ## Tools Used
 - Bolt.new (99% of the code)
