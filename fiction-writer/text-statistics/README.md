@@ -31,7 +31,7 @@ This project provides tools and APIs to extract detailed statistics and insights
 - Written in TypeScript
 
 > [!TIP]
-> use the files ./resources/prompts/mcp files as initial prompt to your ai assistent, to properly help with mcp file generation
+> use the files [./resources/prompts/mcp](../../resources/prompts/mcp) files as initial prompt to your ai assistent, to properly help with mcp file generation
 
 ## Build
 
