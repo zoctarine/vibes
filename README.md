@@ -5,11 +5,11 @@ Vibes are a set of small, often strange, sometimes-useful, and frequently confus
     They're made by collaborating with AI — not just as a tool, but as a co-developer.
 
 This is a playground for exploring what it's like to:
-✨ generating ideas with AI
-✨ writing most (or all) of the code through AI guidance
-✨ only stepping in when things go off the rails
+- generating ideas with AI
+- writing most (or all) of the code through AI guidance
+- only stepping in when things go off the rails
 
-📂 What's inside
+# What's inside
 
 In the Vibes/ folder, you'll find a ragtag collection of apps:
 
