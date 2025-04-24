@@ -18,6 +18,6 @@ In the Vibes/ folder, you'll find a ragtag collection of apps:
 - fiction-writer/ tools for writing fiction
     - text-statistics: small MCP server to count words, pages, reading times, etc
 
-🧙‍♂️ Why?
+# Why?
 
 Because the future showed up early, and instead of flying cars, it brought ... agents
