@@ -1,6 +1,20 @@
-# Text Statistics
+# Text Statistics MCP server
 
-A modular TypeScript library and server for analyzing text, designed for integration with the Model Context Protocol (MCP). This project provides tools and APIs to extract detailed statistics and insights from text, including word and character counts, sentence and paragraph analysis, estimated reading time, and page count calculations for various formats.
+> [!NOTE] 
+> Part of the [vibes](https://github.com/vibes) playground.
+>
+> *"Vibes" are a quick experiments, mostly built by AI with prompt guidance. Expect rough edges – it's not production-ready, likely buggy, and definitely not example code, but it works..somehow. Think of it as a snapshot from my AI coding playground.*
+
+## The Idea
+Have some control over how text statistics are calculated while analysing manuscripts... with AI
+
+## The Result
+
+MCP is rising in popularity. Why not try it out?
+
+A modular TypeScript library and server for analyzing text, designed for integration with the Model Context Protocol (MCP). 
+
+This project provides tools and APIs to extract detailed statistics and insights from text, including word and character counts, sentence and paragraph analysis, estimated reading time, and page count calculations for various formats.
 
 ## Features
 
@@ -10,42 +24,67 @@ A modular TypeScript library and server for analyzing text, designed for integra
 - **Comprehensive Analysis**: Perform full text analysis combining all statistics and estimates in a single report.
 - **MCP Integration**: Exposes all features as tools and prompts for use in MCP-compatible environments.
 
-## Usage
-
-This package is intended for use as a backend service or as a library in larger applications. It is structured around registering features with an MCP server.
-
-### Example
-
-```typescript
-import { createMcpServer } from "./src/server/mcpServer";
-
-const server = createMcpServer();
-server.listen(3000);
-```
-
-## Project Structure
-
-- `src/features/countTextStats`: Basic text statistics (characters, words, sentences, paragraphs)
-- `src/features/estimateReadingTime`: Reading time estimation logic
-- `src/features/calculatePageCount`: Page count estimation for different formats
-- `src/features/analyzeTextFull`: Comprehensive analysis combining all features
-- `src/server/mcpServer.ts`: MCP server setup and feature registration
-
-## Installation
-
-```bash
-npm install
-```
 
 ## Development
 
+- Claude Sonnet 3.7 (40%), Github Copilot (20%)
 - Written in TypeScript
-- Designed for extensibility and integration with MCP
-- To run or extend, see the `src/` directory for feature modules
+
+> [!TIP]
+> use the files ./resources/promts files as initial prompt to your ai assistent, to properly help with mcp file generation
+
+## Build
+
+NPM:
+
+```bash
+npm install
+npm run build
+```
+
+Docker:
+
+```bash
+docker build -t mcp/fw/text-statistics .
+```
+
+## Usage with VS Code
+
+Follow the instructions here: https://code.visualstudio.com/docs/copilot/chat/mcp-servers#_add-an-mcp-server 
+
+or, if you just want to get started, add the following JSON block to your User Settings (JSON) file in VS Code. (You can do this by pressing Ctrl + Shift + P and typing Preferences: Open User Settings (JSON)) or to your workspace settings (add it to a file called .vscode/mcp.json in your workspace)
+
+
+NPM
+
+```json
+{
+  "mcp": {
+    "servers": {
+      "fw-text-statistics": {
+        "command": "node",
+        "args": ["build/index.js"]
+      }
+    }
+  }
+}
+```
+
+Docker
+
+```json
+{
+  "mcp": {
+    "servers": {
+      "fw-text-statistics": {
+        "command": "docker",
+        "args": ["run", "-i", "--rm", "mcp/fw/text-statistics"],
+      }
+    }
+  }
+}
+```
 
 ## License
 
 MIT
-
----
-*Part of the [fiction-writer](https://github.com/vibes/fiction-writer) suite.*
