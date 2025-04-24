@@ -34,34 +34,58 @@ export const TreeProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
         if (error) throw error;
 
-        const tree: TreeItem[] = [];
+        let rootDoc = documents.find(doc => !doc.parent_id);
+        
+        // If no root document exists, create one
+        if (!rootDoc) {
+          const { data: { session }, error: authError } = await supabase.auth.getSession();
+          if (authError || !session?.user?.id) {
+            throw new Error('Authentication error: User not authenticated');
+          }
 
-        // Find the root document (no parent_id)
-        const rootDoc = documents.find(doc => !doc.parent_id);
-        if (rootDoc) {
-          const buildTree = (doc: any): TreeItem => {
-            const children = documents.filter(d => d.parent_id === doc.id);
-            const sortedChildren = children.sort((a, b) => 
-              new Date(a.created_at).getTime() - new Date(b.created_at).getTime()
-            );
-            
-            const mappedChildren = sortedChildren.map(child => buildTree(child));
-
-            return {
-              id: doc.id,
-              title: doc.title,
-              content: doc.content || '',
-              type: doc.type === 'folder' ? 'chapter' : 'scene',
-              parentId: doc.parent_id,
-              orderIndex: 0,
-              isVisible: true,
-              children: mappedChildren,
-            };
+          const newRootDoc = {
+            title: 'Draft',
+            content: '',
+            type: 'folder',
+            parent_id: null,
+            project_id: selectedProject.id,
+            owner_id: session.user.id,
           };
 
-          tree.push(buildTree(rootDoc));
+          const { data: createdRoot, error: createError } = await supabase
+            .from('documents')
+            .insert(newRootDoc)
+            .select()
+            .single();
+
+          if (createError) throw createError;
+          rootDoc = createdRoot;
+          documents.push(rootDoc); // Add the new root to documents array for tree building
         }
 
+        const tree: TreeItem[] = [];
+
+        const buildTree = (doc: any): TreeItem => {
+          const children = documents.filter(d => d.parent_id === doc.id);
+          const sortedChildren = children.sort((a, b) => 
+            new Date(a.created_at).getTime() - new Date(b.created_at).getTime()
+          );
+          
+          const mappedChildren = sortedChildren.map(child => buildTree(child));
+
+          return {
+            id: doc.id,
+            title: doc.title,
+            content: doc.content || '',
+            type: doc.type === 'folder' ? 'chapter' : 'scene',
+            parentId: doc.parent_id,
+            orderIndex: 0,
+            isVisible: true,
+            children: mappedChildren,
+          };
+        };
+
+        tree.push(buildTree(rootDoc));
         setItems(tree);
       } catch (error) {
         console.error('Error fetching documents:', error);
@@ -247,15 +271,44 @@ export const TreeProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
   }, [selectedProject, selectedItem]);
 
-  const moveItem = useCallback((dragId: string, dropId: string, position: 'before' | 'after' | 'inside') => {
-    setItems(prev => {
-      const draggedItem = findItemWithChildren(prev, dragId);
-      if (!draggedItem) return prev;
+  const moveItem = useCallback(async (dragId: string, dropId: string, position: 'before' | 'after' | 'inside') => {
+    if (!selectedProject) return;
 
-      const treeWithoutDraggedItem = removeItemFromTree(prev, dragId);
-      return insertIntoTree(treeWithoutDraggedItem, dropId, draggedItem, position);
-    });
-  }, []);
+    try {
+      // First find the dragged item and its new parent
+      const draggedItem = findItemWithChildren(items, dragId);
+      if (!draggedItem) return;
+
+      let newParentId: string | null = null;
+      
+      if (position === 'inside') {
+        // If dropping inside, the drop target is the new parent
+        newParentId = dropId;
+      } else {
+        // If dropping before or after, find the parent of the drop target
+        const dropTarget = findItemWithChildren(items, dropId);
+        if (dropTarget) {
+          newParentId = dropTarget.parentId;
+        }
+      }
+
+      // Update the database first
+      const { error } = await supabase
+        .from('documents')
+        .update({ parent_id: newParentId })
+        .eq('id', dragId);
+
+      if (error) throw error;
+
+      // If database update successful, update the UI
+      setItems(prev => {
+        const treeWithoutDraggedItem = removeItemFromTree(prev, dragId);
+        return insertIntoTree(treeWithoutDraggedItem, dropId, draggedItem, position);
+      });
+    } catch (error) {
+      console.error('Error moving document:', error);
+    }
+  }, [selectedProject, items]);
 
   const findItemWithChildren = (items: TreeItem[], id: string): TreeItem | null => {
     for (const item of items) {
@@ -292,37 +345,41 @@ export const TreeProvider: React.FC<{ children: React.ReactNode }> = ({ children
     itemToInsert: TreeItem,
     position: 'before' | 'after' | 'inside'
   ): TreeItem[] => {
-    return items.map(item => {
+    let result: TreeItem[] = [];
+    
+    for (let i = 0; i < items.length; i++) {
+      const item = items[i];
+      
       if (item.id === targetId) {
         if (position === 'inside') {
-          return {
+          // Add as child
+          result.push({
             ...item,
             children: [...item.children, { ...itemToInsert, parentId: item.id }],
-          };
+          });
+        } else if (position === 'before') {
+          // Add before this item
+          result.push({ ...itemToInsert, parentId: item.parentId });
+          result.push(item);
+        } else { // after
+          // Add after this item
+          result.push(item);
+          result.push({ ...itemToInsert, parentId: item.parentId });
         }
-        
-        const newItem = { ...itemToInsert, parentId: item.parentId };
-        if (position === 'before') {
-          return [newItem, item];
-        }
-        return [item, newItem];
-      }
-
-      if (item.children.length > 0) {
+      } else if (item.children.length > 0) {
+        // Check children recursively
         const newChildren = insertIntoTree(item.children, targetId, itemToInsert, position);
-        if (newChildren.length !== item.children.length) {
-          return {
-            ...item,
-            children: newChildren.flat(),
-          };
-        }
-        return {
+        result.push({
           ...item,
           children: newChildren,
-        };
+        });
+      } else {
+        // Regular item, no children
+        result.push(item);
       }
-      return item;
-    }).flat();
+    }
+    
+    return result;
   };
 
   const selectItem = useCallback((item: TreeItem | null) => {
