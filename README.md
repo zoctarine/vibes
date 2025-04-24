@@ -7,11 +7,11 @@ Vibes are a set of small, often strange, sometimes-useful, and frequently confus
 This is a playground for exploring what it's like to:
 - generating ideas with AI
 - writing most (or all) of the code through AI guidance
-- only stepping in when things go off the rails
+- only stepping in when AI can't solve it or goes in a wrong direction
 
 # What's inside
 
-In the Vibes/ folder, you'll find a ragtag collection of apps:
+In the Vibes/ folder, you'll find a random collection of apps:
 
 - [story-o-matic](/story-o-matic): a choose your own adventure style of infinite storytelling app
 - [draft-editor](/draft-editor): a draft for a distracton free minimalistic editor for writing novels with mardown (and use codemirror editor)
