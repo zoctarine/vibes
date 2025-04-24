@@ -16,6 +16,7 @@ A Model Context Protocol (MCP) server that enhances prompts by applying best sof
 
 - Claude Desktop (40%), Cursor(40%)
 - Written in TypeScript
+- Helpful: console.anthropic.com/workbench
 
 > [!TIP]
 > use the files ./resources/prompts/mcp files as initial prompt to your ai assistent, to properly help with mcp file generation
