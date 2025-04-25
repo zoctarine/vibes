@@ -1,11 +1,41 @@
-# Conversation Summary Manager
+# Memory Port - portable conversation summary 
 
+> [!NOTE] 
+> Part of the [vibes](https://github.com/vibes) playground.
+>
+> *"Vibes" are a quick experiments, mostly built by AI with prompt guidance. Expect rough edges – it's not production-ready, likely buggy, and definitely not example code, but it works..somehow. Think of it as a snapshot from my AI coding playground.*
+
+## The Idea
+Continue conversations in a new client, or in a new chat session, with some memory of the previous conversation.
+
+## The Result
 This is an MCP (Model Context Protocol) server that provides conversation summary management capabilities. It allows you to:
 
 - Generate and save conversation summaries
 - Load existing summaries into a conversation
 - List all available summaries
 - Delete summaries
+- Should also provide encryption support, per client ID
+
+You can simply say:
+
+```
+save summary as MyProject1
+```
+
+and later, in a different chat, or different client, say
+
+```
+load summary MyProject1
+```
+
+or, why not
+
+```
+load summary MyProject1 and show it to me
+```
+
+
 
 ## Prerequisites
 
@@ -33,41 +63,45 @@ This is an MCP (Model Context Protocol) server that provides conversation summar
    # Edit the .env file with your values
    ```
 
-## Build and Run
 
-Build the TypeScript code:
-```
+## Build
+
+NPM:
+
+```bash
+npm install
 npm run build
 ```
 
-Start the server:
-```
-npm start
+Docker:
+
+```bash
+docker build -t mcp/memory-port .
 ```
 
-For development (build & run):
-```
-npm run dev
-```
 
 ## Connecting with an MCP Client
 
 This server implements the Model Context Protocol and runs on stdio, which means it can be integrated with any MCP-compatible client. The server provides the following tools:
 
-- `summarize-and-save`: Generate a conversation summary and save it
-- `load-summary`: Load a previously saved summary
+- `persist-summary-to-storage`: Generate a conversation summary and save it
+- `load-summary-from-storage`: Load a previously saved summary
 - `list-summaries`: List all saved summaries
 - `delete-summary`: Delete a saved summary
 
-## Features
+Because not all clients have the *sampling* capability (yet) two prompts were created to instruct the model to explicitly call the 2 persis and load functions
+- `save-summary`: A prompt that generates a summary and then calls the tool 
+- `load-summary`: A prompt that loads a summary and then instructs the model to keep it as context
 
-- Securely stores conversation summaries in Supabase
-- Isolates summaries by client API key
-- Supports adding summaries to conversation context
-- Tracks creation, update, and access timestamps
-- Supports tagging summaries with relevant topics
+## Development
 
-## Architecture
+- Cursor with Claude Sonnet 3.7 (40%), Github Copilot (20%)
+- Written in TypeScript
+
+> [!TIP]
+> use the [Preparing Documentation](https://modelcontextprotocol.io/tutorials/building-mcp-with-llms#preparing-the-documentation) guide to help your ai assistent understand MCP better
+
+## Technologies
 
 This project uses:
 - TypeScript for type safety
@@ -75,8 +109,50 @@ This project uses:
 - Supabase for data storage
 - Zod for schema validation
 
+
+## Usage with VS Code
+
+Follow the instructions here: https://code.visualstudio.com/docs/copilot/chat/mcp-servers#_add-an-mcp-server 
+
+or, if you just want to get started, add the following JSON block to your User Settings (JSON) file in VS Code. (You can do this by pressing Ctrl + Shift + P and typing Preferences: Open User Settings (JSON)) or to your workspace settings (add it to a file called .vscode/mcp.json in your workspace)
+
+
+NPM
+
+```json
+{
+  "mcp": {
+    "servers": {
+      "fw-text-statistics": {
+        "command": "node",
+        "args": ["dist/index.js"], // your full path here
+         "env":{
+            "ENC_KEY": "not supported yet"
+         }
+      }
+    }
+  }
+}
+```
+
+Docker
+
+```json
+{
+  "mcp": {
+    "servers": {
+      "fw-text-statistics": {
+        "command": "docker",
+        "args": ["run", "-i", "--rm", "mcp/memory-port"],
+      }
+    }
+  }
+}
+```
+
+
 ## Environment Variables
 
 - `SUPABASE_URL`: URL of your Supabase project
 - `SUPABASE_KEY`: Service role key for Supabase
-- `MCP_CLIENT_API_KEY`: API key for client identification 
+- `MCP_CLIENT_API_KEY`: API key for client identification ***(if you want to use same chat memory in different clients, use the same MCP_CLIENT_API_KEY for all of them)***
