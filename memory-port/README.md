@@ -15,7 +15,6 @@ This is an MCP (Model Context Protocol) server that provides conversation summar
 - Load existing summaries into a conversation
 - List all available summaries
 - Delete summaries
-- Should also provide encryption support, per client ID
 
 You can simply say:
 
@@ -156,3 +155,12 @@ Docker
 - `SUPABASE_URL`: URL of your Supabase project
 - `SUPABASE_KEY`: Service role key for Supabase
 - `MCP_CLIENT_API_KEY`: API key for client identification ***(if you want to use same chat memory in different clients, use the same MCP_CLIENT_API_KEY for all of them)***
+
+## Next Steps
+- encrypt at rest (use client configured enc key)
+- use different storage providers
+- use *sampling* if suppoted, when generating summaries and updateing context
+
+# License
+
+MIT
