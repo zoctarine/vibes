@@ -26,6 +26,7 @@ This project provides tools and APIs to extract detailed statistics and insights
 
 ![image](https://github.com/user-attachments/assets/a7c41d78-34c6-419e-a152-510a9bba9664)
 
+![image](https://github.com/user-attachments/assets/3a87ed0c-e48b-453f-91a9-e3a70262dfba)
 
 
 ## Development
