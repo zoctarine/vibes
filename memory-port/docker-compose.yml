@@ -1,0 +1,12 @@
+version: '3'
+
+services:
+  mcp-server:
+    build: .
+    environment:
+      - SUPABASE_URL=${SUPABASE_URL}
+      - SUPABASE_KEY=${SUPABASE_KEY}
+      - MCP_CLIENT_API_KEY=${MCP_CLIENT_API_KEY}
+    restart: unless-stopped
+    stdin_open: true # For stdio transport
+    tty: true # For stdio transport 
