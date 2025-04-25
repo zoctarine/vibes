@@ -14,7 +14,12 @@ A simple text editor with Codemirror, that let's you edit scenes, chapters, reor
 
 
 ## Live Demo
-TBD [Live Demo](https://example.com)
+TBD 
+
+![image](https://github.com/user-attachments/assets/589796e3-aca8-4257-9ca1-8a3101e429df)
+
+![image](https://github.com/user-attachments/assets/ef0ae482-ea7a-4d73-b9ea-26fb30d18a50)
+
 
 ## Tools Used
 - Bolt.new (80%), Cursor(15%)
