@@ -12,6 +12,14 @@ See how easy it is to make a MCP tool to enhance prompts.
 
 A Model Context Protocol (MCP) server that enhances prompts by applying best software development practices. Will be enhanced with different prompts
 
+Example:
+
+```
+/enhance-prompt Build a small MCP server for a bus schedule app connecting to external api
+```
+
+![image](https://github.com/user-attachments/assets/3729226b-6472-4ef1-a2ae-33b71e2cb98e)
+
 ## Development
 
 - Claude Desktop (40%), Cursor(40%)
