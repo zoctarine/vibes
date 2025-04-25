@@ -3,7 +3,7 @@
 > [!NOTE] 
 > Part of the [vibes](https://github.com/vibes) playground.
 >
-> *"Vibes" are a quick experiments, mostly built by AI with prompt guidance. Expect rough edges – it's not production-ready, likely buggy, and definitely not example code, but it works..somehow. Think of it as a snapshot from my AI coding playground.*
+> *"Vibes" are quick experiments, mostly built by AI with prompt guidance. Expect rough edges – it's not production-ready, likely buggy, and definitely not example code, but it works..somehow. Think of it as a snapshot from my AI coding playground.*
 
 ## The Idea
 What if... i can make a simple editor with code-mirror for my writing needs
