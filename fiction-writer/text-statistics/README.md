@@ -24,6 +24,9 @@ This project provides tools and APIs to extract detailed statistics and insights
 - **Comprehensive Analysis**: Perform full text analysis combining all statistics and estimates in a single report.
 - **MCP Integration**: Exposes all features as tools and prompts for use in MCP-compatible environments.
 
+![image](https://github.com/user-attachments/assets/a7c41d78-34c6-419e-a152-510a9bba9664)
+
+
 
 ## Development
 
