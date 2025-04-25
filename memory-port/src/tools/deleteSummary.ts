@@ -6,6 +6,7 @@ import { SummaryStorage } from "../services/summaryStorage.js";
 export function registerDeleteSummaryTool(server: McpServer) {
   server.tool(
     TOOL_NAMES.DELETE_SUMMARY,
+    "Deletes a previously stored summary by its key. Requires confirmation to prevent accidental deletion.",
     {
       summaryKey: z.string().describe("The key/filename of the summary to delete"),
       confirm: z.boolean().default(true).describe("Confirmation to delete the summary")

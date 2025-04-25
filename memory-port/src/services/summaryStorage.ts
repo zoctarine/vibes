@@ -50,7 +50,7 @@ export class SummaryStorage {
         if (error) throw error;
       }
 
-      console.log(`[STORAGE] Saved summary with key: ${summaryKey}`);
+      console.error(`[STORAGE] Saved summary with key: ${summaryKey}`);
       return compoundKey;
     } catch (error) {
       const message = error instanceof Error ? error.message : String(error);
@@ -72,7 +72,7 @@ export class SummaryStorage {
       if (error) throw error;
       if (!data) throw new Error(`No summary found with key: ${summaryKey}`);
 
-      console.log(`[STORAGE] Loaded summary with key: ${summaryKey}`);
+      console.info(`[STORAGE] Loaded summary with key: ${summaryKey}`);
 
       // Update the last accessed timestamp
       await supabase
@@ -119,7 +119,7 @@ export class SummaryStorage {
 
       if (error) throw error;
 
-      console.log(`[STORAGE] Deleted summary with key: ${summaryKey}`);
+      console.info(`[STORAGE] Deleted summary with key: ${summaryKey}`);
       return true;
     } catch (error) {
       const message = error instanceof Error ? error.message : String(error);

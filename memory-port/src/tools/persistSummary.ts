@@ -6,6 +6,7 @@ import { SummaryStorage } from "../services/summaryStorage.js";
 export function registerPersistSummaryTool(server: McpServer) {
   server.tool(
     TOOL_NAMES.PERSIST_SUMMARY_TO_STORAGE,
+    "Saves a summary of the conversation to storage. This summary can be used as context for future conversations. It requires a summary key to identify the summary.",
     {
       summaryKey: z.string().describe("The key/filename to save the summary under"),
       summary: z.string().describe("A summary of the conversation so far, including key topics and hashtags, so it can serve as context for future conversations, or an initial prompt for a new conversation."),

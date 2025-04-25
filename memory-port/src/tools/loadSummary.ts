@@ -6,6 +6,7 @@ import { SummaryStorage } from "../services/summaryStorage.js";
 export function registerLoadSummaryTool(server: McpServer) {
   server.tool(
     TOOL_NAMES.LOAD_SUMMARY_FROM_STORAGE,
+    "Loads a previously stored summary by its key. It also adds it to the current chat context.",
     {
       summaryKey: z.string().describe("The key/filename of the summary to load"),
       includeInContext: z.boolean().optional().default(true).describe("Whether to add the summary to the current context")

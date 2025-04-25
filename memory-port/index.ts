@@ -1,6 +1,6 @@
 import { startServer } from './src/server.js';
 
-console.log("Starting Conversation Summary Manager...");
+console.error("Starting Conversation Summary Manager...");
 
 // Start the server
 startServer().catch(err => {

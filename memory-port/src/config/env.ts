@@ -43,7 +43,7 @@ const projectRoot = findProjectRoot(__dirname);
 // Load .env file from project root
 dotenv.config({ path: join(projectRoot, '.env') });
 
-console.log(`[CONFIG] Loading .env from: ${join(projectRoot, '.env')}`);
+console.error(`[CONFIG] Loading .env from: ${join(projectRoot, '.env')}`);
 
 // Environment variables
 export const SUPABASE_URL = process.env.SUPABASE_URL || '';

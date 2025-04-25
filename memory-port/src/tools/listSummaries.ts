@@ -6,6 +6,8 @@ import { SummaryStorage } from "../services/summaryStorage.js";
 export function registerListSummariesTool(server: McpServer) {
   server.tool(
     TOOL_NAMES.LIST_SUMMARIES,
+    "Lists all the saved summeries for the current client. Each summary is identified by a unique key.",
+
     {},
     async ({ }, exchange) => {
       try {

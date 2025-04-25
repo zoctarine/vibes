@@ -47,7 +47,7 @@ export async function startServer() {
     const transport = new StdioServerTransport();
     await server.connect(transport);
 
-    console.log(`Conversation Summary Manager server started with client ID: ${CLIENT_API_KEY}`);
+    console.error(`Conversation Summary Manager server started with client ID: ${CLIENT_API_KEY}`);
   } catch (err) {
     console.error('Failed to start server:', err);
     process.exit(1);
