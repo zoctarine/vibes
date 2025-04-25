@@ -19,6 +19,12 @@ In the Vibes/ folder, you'll find a random collection of apps:
 - fiction-writer/ tools for writing fiction
     - [text-statistics](/fiction-writer/text-statistics): small MCP server to count words, pages, reading times, etc
 
+coming soon:
+- vst midi plugin to generate backing track while you play
+- codebase summarization and commenting for ai agents. make them use less tokens for complex tasks
+- fiction writer: talk with your characters
+- fiction writer: automatic Markdown metadata extraction (location, characters,...)
+
 # Tools
 
 I experiment with (in alphabetical order):
