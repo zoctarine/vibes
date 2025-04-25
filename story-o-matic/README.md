@@ -20,6 +20,13 @@ A narrative generator (inspired by choose your own adventure books) designed to 
 ## Live Demo  
 🚀 **Deployed on Netlify:**  
 
+![image](https://github.com/user-attachments/assets/65051cd1-7bbd-47c5-bcbd-6dae9a2650e7)
+
+![image](https://github.com/user-attachments/assets/71d9dfdb-035d-4f1e-bf0c-eded5c7b2073)
+
+![image](https://github.com/user-attachments/assets/d19ee700-4cc1-458e-83b9-7516f51ce877)
+
+
 ---
 
 ## Tools Used  
