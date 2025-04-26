@@ -38,7 +38,7 @@ I experiment with (in alphabetical order):
 - [GitHub Copilot](https://github.com/features/copilot)
 - [JetBrains AI](https://www.jetbrains.com/ai/)
 - [JetBrains Junie](https://www.jetbrains.com/junie/)
-
+- [Langflow](https://www.langflow.org)
 
 # Why?
 
