@@ -29,13 +29,6 @@ A narrative generator (inspired by choose your own adventure books) designed to 
 ![image](https://github.com/user-attachments/assets/d19ee700-4cc1-458e-83b9-7516f51ce877)
 
 
-## Development
-- **Design:** Tailwind CSS  
-- **Development:** Vite, TypeScript  
-- **Organization:** Local storage for story persistence  
-
----
-
 ## Technologies  
 - **Languages:** TypeScript, JavaScript  
 - **Frameworks:** React, Vite  
@@ -97,17 +90,6 @@ npm run preview
 1. Start a new story by selecting a genre and narrative settings.  
 2. Follow the branching paths or write custom choices to shape the narrative.  
 3. Save your story to the library for future exploration or export it for sharing.  
-
----
-
-## README Essentials  
-- [x] Title & tagline  
-- [x] Idea & vibe  
-- [x] Live link  
-- [x] Tools & tech  
-- [x] Setup & usage  
-- [x] License info  
-- [x] Creator contact  
 
 ---
 
