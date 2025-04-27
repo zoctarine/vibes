@@ -13,14 +13,14 @@ This is a playground for exploring what it's like to:
 
 In the Vibes/ folder, you'll find a random collection of apps:
 
-- [story-o-matic](/story-o-matic): a choose your own adventure style of infinite storytelling app
-- [draft-editor](/draft-editor): a draft for a distracton free minimalistic editor for writing novels with mardown (and use codemirror editor)
-- [prompt-enhancer](/prompt-enhancer): a small MCP server for enahancing prompts
-- [memory-port](/memory-port): a simple MCP server that persist a chat summary, so it can be loaded in a different chat client (compatible with Memory Port Vault)
-- [memory-port-vault](/memory-port-vault/) A document storage for memory-port (organized per projects)
+- [story-o-matic](/story-o-matic/README.md): a choose your own adventure style of infinite storytelling app
+- [draft-editor](/draft-editor/README.md): a draft for a distracton free minimalistic editor for writing novels with mardown (and use codemirror editor)
+- [prompt-enhancer](/prompt-enhancer/README.md): a small MCP server for enahancing prompts
+- [memory-port](/memory-port/README.md): a simple MCP server that persist a chat summary, so it can be loaded in a different chat client (compatible with Memory Port Vault)
+- [memory-port-vault](/memory-port-vault/README.md) A document storage for memory-port (organized per projects)
 - fiction-writer/ tools for writing fiction
-    - [text-statistics](/fiction-writer/text-statistics): small MCP server to count words, pages, reading times, etc
-- [portfolio](/the-vibes-portfolio/): a simple portfolio site
+    - [text-statistics](/fiction-writer/text-statistics/README.md): small MCP server to count words, pages, reading times, etc
+- [portfolio](/the-vibes-portfolio/README.md): a simple portfolio site
 
 coming soon:
 - vst midi plugin to generate backing track while you play
