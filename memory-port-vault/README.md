@@ -11,7 +11,7 @@ Inspired by Calude Desktop projects feature, NotebookLM, a unified store for LLM
 ## The result
 MemPortVault is a document management system built with React, Supabase, and ChackraUI. It allows users to create projects, store documents, and manage them through API (used by [Memory Port Mcp](./../memory-port/README.md))
 
-[![Deployed to Netlify](https://www.netlify.com/img/deploy/button.svg)](https://candid-hotteok-3ce691.netlify.app)
+[Deployed to Netlify](https://candid-hotteok-3ce691.netlify.app)
 
 ## AI Tools
 
@@ -27,6 +27,11 @@ MemPortVault is a document management system built with React, Supabase, and Cha
 *   Tagging and searching for documents
 *   API key generation and management
 *   User profile management
+
+<img width="845" alt="image" src="https://github.com/user-attachments/assets/1e83e4f7-97dd-49ed-b1d9-f449651127df" />
+<img width="961" alt="image" src="https://github.com/user-attachments/assets/2e2f31b2-7f0f-425f-8166-8e85a730caf5" />
+<img width="952" alt="image" src="https://github.com/user-attachments/assets/8c389ceb-eac6-406e-894a-abea5f4e06d9" />
+
 
 ## Technologies Used
 
