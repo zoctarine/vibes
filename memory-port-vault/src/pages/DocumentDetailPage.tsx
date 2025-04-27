@@ -262,10 +262,10 @@ const DocumentDetailPage: React.FC = () => {
   if (!isNewDocument && !document) {
     return <Alert variant="error">Document not found</Alert>;
   }
-  
+
   if (isNewDocument) {
     return (
-      <div className="space-y-6">
+      <VStack spacing="6" align="stretch">
         {error && (
           <Alert
             variant="error"
@@ -276,7 +276,7 @@ const DocumentDetailPage: React.FC = () => {
           </Alert>
         )}
 
-        <div className="flex items-center justify-between">
+        <Flex align="center" justify="space-between">
           <Button
             variant="outline"
             size="sm"
@@ -294,11 +294,11 @@ const DocumentDetailPage: React.FC = () => {
           >
             Create
           </Button>
-        </div>
+        </Flex>
 
-        <Card className="border border-gray-200">
-          <CardContent className="p-6">
-            <div className="space-y-4">
+        <Card borderWidth="1px" borderColor="gray.200">
+          <CardContent p="6">
+            <VStack spacing="4" align="stretch">
               <Input
                 label="Document title"
                 value={title}
@@ -307,23 +307,24 @@ const DocumentDetailPage: React.FC = () => {
                 autoFocus
               />
               
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
+              <Box>
+                <Text fontSize="sm" fontWeight="medium" color="gray.700" mb="1">
                   Content
-                </label>
-                <textarea
-                  className="w-full rounded-md border border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm p-2 min-h-[300px]"
+                </Text>
+                <Textarea
                   value={content}
                   onChange={(e) => {
                     setContent(e.target.value);
                     setShowUrlInput(false);
                   }}
                   placeholder="Write your document content in Markdown..."
-                ></textarea>
-                <p className="mt-1 text-xs text-gray-500">
+                  minH="300px"
+                  size="sm"
+                />
+                <Text mt="1" fontSize="xs" color="gray.500">
                   Markdown formatting is supported
-                </p>
-                <div className="mt-2 space-y-2">
+                </Text>
+                <VStack mt="2" spacing="2" align="stretch">
                   <Button
                     type="button"
                     variant="outline"
@@ -335,61 +336,57 @@ const DocumentDetailPage: React.FC = () => {
                   </Button>
                   
                   {showUrlInput && (
-                    <form onSubmit={handleLoadFromUrl} className="flex gap-2">
-                      <div className="relative flex-grow">
-                        <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                          <Link size={16} className="text-gray-400" />
-                        </div>
-                        <Input
-                          value={url}
-                          onChange={(e) => setUrl(e.target.value)}
-                          placeholder="https://example.com/article"
-                          required
-                          className="pl-10"
-                          type="url"
-                        />
-                      </div>
-                      <Button
-                        type="submit"
-                        variant="primary"
-                        size="sm"
-                        isLoading={isLoadingUrl}
-                      >
-                        Load
-                      </Button>
+                    <form onSubmit={handleLoadFromUrl}>
+                      <HStack spacing="2">
+                        <Box flex="1">
+                          <Input
+                            value={url}
+                            onChange={(e) => setUrl(e.target.value)}
+                            placeholder="https://example.com/article"
+                            required
+                            type="url"
+                            leftElement={<Icon as={Link} boxSize="4" />}
+                          />
+                        </Box>
+                        <Button
+                          type="submit"
+                          variant="primary"
+                          size="sm"
+                          isLoading={isLoadingUrl}
+                        >
+                          Load
+                        </Button>
+                      </HStack>
                     </form>
                   )}
-                </div>
-              </div>
+                </VStack>
+              </Box>
               
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
+              <Box>
+                <Text fontSize="sm" fontWeight="medium" color="gray.700" mb="1">
                   Tags
-                </label>
-                <Flex>
-                  <InputGroup>
-                    <InputLeftElement>
-                      <Icon as={Tag} color="gray.400" boxSize="4" />
-                    </InputLeftElement>
+                </Text>
+                <HStack spacing="2">
+                  <Box flex="1">
                     <Input
                       placeholder="Add tags..."
                       value={tagInput}
                       onChange={(e) => setTagInput(e.target.value)}
                       onKeyPress={handleTagKeyPress}
+                      leftElement={<Icon as={Tag} boxSize="4" />}
                     />
-                  </InputGroup>
+                  </Box>
                   <Button
                     type="button"
                     variant="outline"
-                    ml="2"
                     onClick={handleAddTag}
                   >
                     <Plus size={18} />
                   </Button>
-                </Flex>
+                </HStack>
                 
                 {tags.length > 0 && (
-                  <div className="mt-2 flex flex-wrap gap-2">
+                  <Wrap mt="2" spacing="2">
                     {tags.map((tag) => (
                       <Badge
                         key={tag}
@@ -400,13 +397,13 @@ const DocumentDetailPage: React.FC = () => {
                         {tag}
                       </Badge>
                     ))}
-                  </div>
+                  </Wrap>
                 )}
-              </div>
-            </div>
+              </Box>
+            </VStack>
           </CardContent>
         </Card>
-      </div>
+      </VStack>
     );
   }
 
@@ -542,6 +539,7 @@ const DocumentDetailPage: React.FC = () => {
                       placeholder="Add tags..."
                       value={tagInput}
                       onChange={(e) => setTagInput(e.target.value)}
+                      onKeyPress={handleTagKeyPress}
                       leftElement={<Icon as={Tag} boxSize="4" />}
                     />
                   </Box>
@@ -557,14 +555,15 @@ const DocumentDetailPage: React.FC = () => {
                 {tags.length > 0 && (
                   <Wrap mt="2" spacing="2">
                     {tags.map((tag) => (
-                      <Badge
-                        key={tag}
-                        variant="primary"
-                        removable
-                        onRemove={() => handleRemoveTag(tag)}
-                      >
-                        {tag}
-                      </Badge>
+                      <WrapItem key={tag}>
+                        <Badge
+                          variant="primary"
+                          removable
+                          onRemove={() => handleRemoveTag(tag)}
+                        >
+                          {tag}
+                        </Badge>
+                      </WrapItem>
                     ))}
                   </Wrap>
                 )}
