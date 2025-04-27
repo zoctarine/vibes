@@ -20,6 +20,7 @@ In the Vibes/ folder, you'll find a random collection of apps:
 - [memory-port-vault](/memory-port-vault/) A document storage for memory-port (organized per projects)
 - fiction-writer/ tools for writing fiction
     - [text-statistics](/fiction-writer/text-statistics): small MCP server to count words, pages, reading times, etc
+- [portfolio](/the-vibes-portfolio/): a simple portfolio site
 
 coming soon:
 - vst midi plugin to generate backing track while you play
