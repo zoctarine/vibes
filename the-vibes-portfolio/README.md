@@ -14,7 +14,7 @@ A nice looking page
 
 ## AI Tools
 - ![bolt.new](https://img.shields.io/badge/Bolt.new-99.99%25-blue?style=social)
-- ![Gemini](https://img.shields.io/badge/Gemini-images-blue?style=social)
+- ![Gemini](https://img.shields.io/badge/Gemini-some_images-blue?style=social)
 
 ## Live Demo  
 🚀 [**Deployed on Netlify**](https://gleaming-platypus-039e51.netlify.app/)
