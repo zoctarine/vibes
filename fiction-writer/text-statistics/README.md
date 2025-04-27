@@ -16,6 +16,10 @@ A modular TypeScript library and server for analyzing text, designed for integra
 
 This project provides tools and APIs to extract detailed statistics and insights from text, including word and character counts, sentence and paragraph analysis, estimated reading time, and page count calculations for various formats.
 
+## AI Tools
+- ![Claude Sonnet 3.7](https://img.shields.io/badge/Claude_Sonnet_3.7-40%25-blue?style=social)
+- ![GithubCopilot](https://img.shields.io/badge/Github_Copilot-20%25-blue?style=social)
+
 ## Features
 
 - **Text Statistics**: Count characters, words, sentences, and paragraphs in any text.
@@ -29,10 +33,9 @@ This project provides tools and APIs to extract detailed statistics and insights
 ![image](https://github.com/user-attachments/assets/3a87ed0c-e48b-453f-91a9-e3a70262dfba)
 
 
-## Development
-
-- Claude Sonnet 3.7 (40%), Github Copilot (20%)
-- Written in TypeScript
+## AI Help
+- ![Claude Sonnet 3.7](https://img.shields.io/badge/Claude_Sonnet_3.7-40%25-blue?style=social)
+- ![GithubCopilot](https://img.shields.io/badge/Github_Copilot-20%25-blue?style=social)
 
 > [!TIP]
 > use the [Preparing Documentation](https://modelcontextprotocol.io/tutorials/building-mcp-with-llms#preparing-the-documentation) guide to help your ai assistent understand MCP better

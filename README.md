@@ -16,7 +16,8 @@ In the Vibes/ folder, you'll find a random collection of apps:
 - [story-o-matic](/story-o-matic): a choose your own adventure style of infinite storytelling app
 - [draft-editor](/draft-editor): a draft for a distracton free minimalistic editor for writing novels with mardown (and use codemirror editor)
 - [prompt-enhancer](/prompt-enhancer): a small MCP server for enahancing prompts
-- [memory-port](/memory-port): a simple MCP server that persist a chat summary, so it can be loaded in a different chat client
+- [memory-port](/memory-port): a simple MCP server that persist a chat summary, so it can be loaded in a different chat client (compatible with Memory Port Vault)
+- [memory-port-vault](/memory-port-vault/) A document storage for memory-port (organized per projects)
 - fiction-writer/ tools for writing fiction
     - [text-statistics](/fiction-writer/text-statistics): small MCP server to count words, pages, reading times, etc
 

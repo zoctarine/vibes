@@ -5,17 +5,19 @@
 >
 > *"Vibes" are quick experiments, mostly built by AI with prompt guidance. Expect rough edges – it's not production-ready, likely buggy, and definitely not example code, but it works..somehow. Think of it as a snapshot from my AI coding playground.*
 
----
 
 ## The Idea  
 What if stories were generated while you read them? And are finished when you want them to end?
 
----
-
 ## The Result  
 A narrative generator (inspired by choose your own adventure books) designed to craft interactive, branching stories. It’s storytelling, ... infinite storyteling.
 
----
+## AI Tools
+- ![bolt.new](https://img.shields.io/badge/Bolt.new-80%25-blue?style=social)
+- ![GithubCopilot](https://img.shields.io/badge/Cursor-10%25-blue?style=social)
+- ![Google AI Studio](https://img.shields.io/badge/Google_AI_Studio-5%25-blue?style=social)
+- ![Gemini](https://img.shields.io/badge/Gemini-images-blue?style=social)
+
 
 ## Live Demo  
 🚀 **Deployed on Netlify:**  
@@ -27,10 +29,7 @@ A narrative generator (inspired by choose your own adventure books) designed to 
 ![image](https://github.com/user-attachments/assets/d19ee700-4cc1-458e-83b9-7516f51ce877)
 
 
----
-
-## Tools Used  
-- **AI Assistance:** bolt.new (80%), then continue with Copilot with Claude Sonet 3.5 (10%)
+## Development
 - **Design:** Tailwind CSS  
 - **Development:** Vite, TypeScript  
 - **Organization:** Local storage for story persistence  

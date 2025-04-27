@@ -20,11 +20,10 @@ Example:
 
 ![image](https://github.com/user-attachments/assets/3729226b-6472-4ef1-a2ae-33b71e2cb98e)
 
-## Development
-
-- Claude Desktop (40%), Cursor(40%)
-- Written in TypeScript
-- Helpful: console.anthropic.com/workbench
+## AI Tools
+- ![Claude Desktop](https://img.shields.io/badge/Claude_Desktop-40%25-blue?style=social)
+- ![Cursor](https://img.shields.io/badge/Cursor-40%25-blue?style=social)
+- ![AntrophicConsole](https://img.shields.io/badge/Anthropic_Console-10%25-blue?style=social)
 
 > [!TIP]
 > use the [Preparing Documentation](https://modelcontextprotocol.io/tutorials/building-mcp-with-llms#preparing-the-documentation) guide to help your ai assistent understand MCP better

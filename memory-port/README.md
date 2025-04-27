@@ -35,6 +35,14 @@ load summary MyProject1 and show it to me
 ```
 
 
+## AI Tools
+- ![Claude Desktop](https://img.shields.io/badge/Claude_Desktop-40%25-blue?style=social)
+- ![Github Copilot](https://img.shields.io/badge/Github_Copilot-20%25-blue?style=social)
+
+> [!TIP]
+> use the [Preparing Documentation](https://modelcontextprotocol.io/tutorials/building-mcp-with-llms#preparing-the-documentation) guide to help your ai assistent understand MCP better
+
+
 
 ## Prerequisites
 
@@ -91,14 +99,6 @@ This server implements the Model Context Protocol and runs on stdio, which means
 Because not all clients have the *sampling* capability (yet) two prompts were created to instruct the model to explicitly call the 2 persis and load functions
 - `save-summary`: A prompt that generates a summary and then calls the tool 
 - `load-summary`: A prompt that loads a summary and then instructs the model to keep it as context
-
-## Development
-
-- Cursor with Claude Sonnet 3.7 (40%), Github Copilot (20%)
-- Written in TypeScript
-
-> [!TIP]
-> use the [Preparing Documentation](https://modelcontextprotocol.io/tutorials/building-mcp-with-llms#preparing-the-documentation) guide to help your ai assistent understand MCP better
 
 ## Technologies
 

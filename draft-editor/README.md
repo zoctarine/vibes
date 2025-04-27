@@ -12,6 +12,9 @@ What if... i can make a simple editor with code-mirror for my writing needs
 ## The Result
 A simple text editor with Codemirror, that let's you edit scenes, chapters, reorder and compile them to a complete document. It also has a fullscreen distraction free view.
 
+## AI Tools
+- ![bolt.new](https://img.shields.io/badge/bolt.new-80%25-blue?style=social)
+- ![Cursor](https://img.shields.io/badge/Cursor-15%25-blue?style=social)
 
 ## Live Demo
 TBD 
@@ -24,7 +27,6 @@ TBD
 
 
 ## Tools Used
-- Bolt.new (80%), Cursor(15%)
 - Tailwind CSS
 - Supabase (login and story)
 - Vite
@@ -79,15 +81,6 @@ npm run dev
 1. Open the app and select a project.
 2. Use the Tree View to navigate or create new chapters/scenes.
 3. Write your content in the Editor and watch stats update in real-time.
-
-## README Essentials
-- [x] Title & tagline
-- [x] Idea & vibe
-- [x] Live link
-- [x] Tools & tech
-- [x] Setup & usage
-- [x] License info
-- [x] Creator contact
 
 ## License
 This project is licensed under the MIT License. See the LICENSE file for details.
