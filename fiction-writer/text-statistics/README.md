@@ -12,9 +12,7 @@ Have some control over how text statistics are calculated while analysing manusc
 
 MCP is rising in popularity. Why not try it out?
 
-A modular TypeScript library and server for analyzing text, designed for integration with the Model Context Protocol (MCP). 
-
-This project provides tools and APIs to extract detailed statistics and insights from text, including word and character counts, sentence and paragraph analysis, estimated reading time, and page count calculations for various formats.
+This project provides tools to extract detailed statistics and insights from text, including word and character counts, sentence and paragraph analysis, estimated reading time, and page count calculations for various formats.
 
 ## AI Tools
 - ![Claude Sonnet 3.7](https://img.shields.io/badge/Claude_Sonnet_3.7-40%25-blue?style=social)
