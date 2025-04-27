@@ -17,7 +17,9 @@ A nice looking page
 - ![Gemini](https://img.shields.io/badge/Gemini-images-blue?style=social)
 
 ## Live Demo  
-🚀 [**Deployed on Netlify:**](https://gleaming-platypus-039e51.netlify.app/)
+🚀 [**Deployed on Netlify**](https://gleaming-platypus-039e51.netlify.app/)
+
+<img width="764" alt="image" src="https://github.com/user-attachments/assets/6371d15e-bc52-4ec3-856f-0e2c785e0890" />
 
 ## Technologies  
 - **Languages:** TypeScript, JavaScript  
