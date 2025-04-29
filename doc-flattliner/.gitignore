@@ -3,3 +3,4 @@ node_modules/
 flattened-doc.md
 npm-debug.log
 .git/
+.env

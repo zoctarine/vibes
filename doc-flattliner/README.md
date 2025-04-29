@@ -6,7 +6,7 @@
 > *"Vibes" are quick experiments, mostly built by AI with prompt guidance. Expect rough edges – it's not production-ready, likely buggy, and definitely not example code, but it works..somehow. Think of it as a snapshot from my AI coding playground.*
 
 ## The Idea
-Easily convert documentation website to single .md files so we can give them to AI chats
+Easily convert documentation website to single .md files so we can give them to AI chats. And use AI to compress/summarize large files
 
 .. should have UI as well... sometime... soon
 
@@ -37,7 +37,7 @@ npm install
 ## Usage
 
 ```bash
-npm run doc -- <root-url> [max-depth] [output-file] [--mode=nested|flat]
+npm run doc -- <root-url> [max-depth] [output-file] [--mode=nested|flat] [--compress=<level>]
 ```
 
 ### Parameters
@@ -48,6 +48,12 @@ npm run doc -- <root-url> [max-depth] [output-file] [--mode=nested|flat]
 - **mode**: Either 'nested' or 'flat' (default: flat)
   - **flat**: All content is placed at the end of the document
   - **nested**: Content appears inline where links are found
+- **compress**: Compress the output markdown file to reduce size (optional). Requires specifying one of the following levels:
+  - **light**: Minimal compression, preserving most details
+  - **medium**: Balanced compression, reducing size while keeping key information
+  - **aggressive**: Maximum compression, focusing on essential content
+
+> **Note**: The `--compress` option requires a Gemini API key to be set in the `.env` file. (see env.example)
 
 ### Examples
 
@@ -60,8 +66,14 @@ npm run doc -- https://example.com 3 documentation.md
 
 # Use nested mode
 npm run doc -- https://example.com 2 documentation.md --mode=nested
+
+# Compress the output file with medium compression
+npm run doc -- https://example.com 2 documentation.md --compress=medium
 ```
 
 ## License
 
 MIT
+
+
+node two-pass-compression.js your-large-file.md --level=light --delay=4000

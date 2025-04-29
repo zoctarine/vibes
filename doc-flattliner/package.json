@@ -17,8 +17,10 @@
   "license": "ISC",
   "description": "A tool to crawl websites and convert them to markdown documentation",
   "dependencies": {
+    "@google/generative-ai": "^0.24.1",
     "@mozilla/readability": "^0.6.0",
     "cheerio": "^1.0.0",
+    "dotenv": "^16.5.0",
     "jsdom": "^26.1.0",
     "puppeteer": "^22.8.2",
     "turndown": "^7.2.0"

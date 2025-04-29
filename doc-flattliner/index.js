@@ -15,7 +15,7 @@
  * 
  * Usage:
  * 1. Install dependencies: npm install puppeteer turndown cheerio @mozilla/readability jsdom
- * 2. Run: node index.js <root-url> <max-depth> <output-file> [--mode=nested|flat]
+ * 2. Run: node index.js <root-url> <max-depth> <output-file> [--mode=nested|flat] [--use-hostname]
  */
 
 const puppeteer = require('puppeteer');
@@ -26,6 +26,9 @@ const { URL } = require('url');
 const path = require('path');
 const { Readability } = require('@mozilla/readability');
 const { JSDOM } = require('jsdom');
+const { initializeGeminiAPI, compressContent } = require('./gemini-content-compressor'); 
+require('dotenv').config();
+const genAI = initializeGeminiAPI(process.env.GEMINI_API_KEY);
 
 // Configuration
 const DEFAULT_OUTPUT_FILE = 'flattened-doc.md';
@@ -43,6 +46,28 @@ const rootUrl = args[0];
 const maxDepth = args[1] ? parseInt(args[1]) : DEFAULT_MAX_DEPTH;
 const outputFile = args[2] || DEFAULT_OUTPUT_FILE;
 
+// Add an option to switch between startsWith and hostname comparison
+let useStartsWith = true; // Default to startsWith
+args.forEach(arg => {
+  if (arg === '--use-hostname') {
+    useStartsWith = false;
+  }
+});
+
+
+// Check for mode flag (--compress=medium )
+let aiCompression = undefined;
+args.forEach(arg => {
+  if (arg.startsWith('--compress=')) {
+    const requestedMode = arg.split('=')[1].toLowerCase();
+    if (['light', 'medium', 'aggressive'].includes(requestedMode)) {
+      aiCompression = requestedMode;
+    } else {
+      aiCompression = 'medium';
+    }
+  }
+});
+
 // Check for mode flag (--mode=nested or --mode=flat)
 let mode = DEFAULT_MODE;
 args.forEach(arg => {
@@ -56,7 +81,7 @@ args.forEach(arg => {
 
 if (!rootUrl) {
   console.error('Please provide a root URL to crawl');
-  console.error('Usage: node website-to-markdown.js <root-url> [max-depth] [output-file] [--mode=nested|flat]');
+  console.error('Usage: node website-to-markdown.js <root-url> [max-depth] [output-file] [--mode=nested|flat] [--use-hostname]');
   process.exit(1);
 }
 
@@ -214,6 +239,12 @@ async function processUrl(url, baseUrl, currentDepth, parentUrl = null) {
       // Convert HTML to Markdown
       let markdown = turndownService.turndown(content);
       
+      // If compress is selected, try comporess it
+      if (aiCompression){
+        markdown = await compressContent(genAI, markdown, aiCompression);
+        console.log(`Compressed content for ${url} using ${aiCompression} mode`);
+      }
+
       // Store content in the map
       pageContents.set(url, {
         title: title || url,
@@ -228,20 +259,32 @@ async function processUrl(url, baseUrl, currentDepth, parentUrl = null) {
       });
       
       // Filter links to keep only those from the same domain
-      const baseUrlObj = new URL(baseUrl);
       const urlsToVisit = links
         .filter(link => {
           try {
-            const linkUrl = new URL(link);
-            return linkUrl.hostname === baseUrlObj.hostname && 
-                  !link.includes('#') && 
-                  !visitedUrls.has(link) &&
-                  !link.endsWith('.pdf') &&
-                  !link.endsWith('.zip') &&
-                  !link.endsWith('.png') &&
-                  !link.endsWith('.jpg') &&
-                  !link.endsWith('.jpeg') &&
-                  !link.endsWith('.gif');
+            if (useStartsWith) {
+              return link.startsWith(baseUrl) && // Check if the link starts with the initial URL
+                    !link.includes('#') && 
+                    !visitedUrls.has(link) &&
+                    !link.endsWith('.pdf') &&
+                    !link.endsWith('.zip') &&
+                    !link.endsWith('.png') &&
+                    !link.endsWith('.jpg') &&
+                    !link.endsWith('.jpeg') &&
+                    !link.endsWith('.gif');
+            } else {
+              const linkUrl = new URL(link);
+              const baseUrlObj = new URL(baseUrl);
+              return linkUrl.hostname === baseUrlObj.hostname && // Check if the hostname matches
+                    !link.includes('#') && 
+                    !visitedUrls.has(link) &&
+                    !link.endsWith('.pdf') &&
+                    !link.endsWith('.zip') &&
+                    !link.endsWith('.png') &&
+                    !link.endsWith('.jpg') &&
+                    !link.endsWith('.jpeg') &&
+                    !link.endsWith('.gif');
+            }
           } catch (e) {
             return false;
           }
