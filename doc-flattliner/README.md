@@ -13,6 +13,12 @@ Easily convert documentation website to single .md files so we can give them to 
 ## The Result
 A tool to crawl websites and convert them to markdown documentation.
 
+
+## AI Tools
+- ![Claude Desktop](https://img.shields.io/badge/Claude_Desktop-45%25-blue?style=social)
+- ![GitHub Copilot](https://img.shields.io/badge/Github_Copilot-45%25-blue?style=social)
+
+
 ## Features
 
 - Crawls links within the same domain
