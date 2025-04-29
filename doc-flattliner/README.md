@@ -74,6 +74,3 @@ npm run doc -- https://example.com 2 documentation.md --compress=medium
 ## License
 
 MIT
-
-
-node two-pass-compression.js your-large-file.md --level=light --delay=4000
