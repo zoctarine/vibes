@@ -1,0 +1,26 @@
+{
+  "name": "documentor",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node index.js",
+    "doc": "node index.js"
+  },
+  "keywords": [
+    "markdown",
+    "website",
+    "crawler",
+    "documentation"
+  ],
+  "author": "",
+  "license": "ISC",
+  "description": "A tool to crawl websites and convert them to markdown documentation",
+  "dependencies": {
+    "@mozilla/readability": "^0.6.0",
+    "cheerio": "^1.0.0",
+    "jsdom": "^26.1.0",
+    "puppeteer": "^22.8.2",
+    "turndown": "^7.2.0"
+  }
+}
