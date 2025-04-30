@@ -15,6 +15,7 @@ In the Vibes/ folder, you'll find a random collection of apps:
 
 - [story-o-matic](/story-o-matic/README.md): a choose your own adventure style of infinite storytelling app
 - [draft-editor](/draft-editor/README.md): a draft for a distracton free minimalistic editor for writing novels with mardown (and use codemirror editor)
+- [doc-flattliner](/doc-flattliner/README.md): crawls a documentation websites and saves it to a single markdown file. Optionally, uses AI to compress/summarize large files.
 - [prompt-enhancer](/prompt-enhancer/README.md): a small MCP server for enahancing prompts
 - [memory-port](/memory-port/README.md): a simple MCP server that persist a chat summary, so it can be loaded in a different chat client (compatible with Memory Port Vault)
 - [memory-port-vault](/memory-port-vault/README.md) A document storage for memory-port (organized per projects)
