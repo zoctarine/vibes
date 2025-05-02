@@ -2,23 +2,21 @@
 // This class can handle any type of query about a library catalog and generate appropriate responses
 
 import { AstraDB, Collection } from '@datastax/astra-db-ts';
-import { GoogleGenerativeAI } from '@google/generative-ai';
+import { GoogleGenerativeAI, GenerativeModel } from '@google/generative-ai';
 import { GeminiQueryAnalyzer } from './interpreter';
 
 // Types
 interface Book {
-  _id?: string;
   title: string;
   author: string;
   year: number;
   description: string;
+  similarity?: number;
   genre?: string;
   publisher?: string;
-  embedding_type?: string;
-  source_id?: string;
 }
 
-interface SearchResult {
+interface SearchResults {
   books: Book[];
   query: string;
 }
@@ -27,16 +25,15 @@ interface SearchResult {
  * Class that uses Gemini to interpret any type of user query about books
  */
 class GenericGeminiInterpreter {
-  private genAI: any;
-  private model: any;
+  private model: GenerativeModel;
+  private catalog: EnhancedLibraryCatalog;
 
-  constructor(apiKey: string) {
-    this.genAI = new GoogleGenerativeAI(apiKey);
-
-    // Initialize the model for result interpretation
-    this.model = this.genAI.getGenerativeModel({
-      model: "gemini-2.0-flash"
-    });
+  constructor(apiKey: string, catalog: EnhancedLibraryCatalog) {
+    const genAI = new GoogleGenerativeAI(apiKey);
+    this.model = genAI.getGenerativeModel({
+       model: "gemini-2.0-flash" 
+      });
+    this.catalog = catalog;
   }
 
   /**
@@ -44,21 +41,79 @@ class GenericGeminiInterpreter {
    */
   async processQuery(
     query: string,
-    searchResults: SearchResult | null,
-    previousContext: string = ""
-  ): Promise<string> {
-    // Determine what type of query this is and formulate the appropriate prompt
-    const prompt = this.createPrompt(query, searchResults, previousContext);
-
+    conversationHistory: string[] = [],
+    userWantsSuggestions: boolean = false
+  ): Promise<{ response: string; debug: { prompt: string; geminiResponse: string; searchResults: string; conversationHistory: string; userWantsSuggestions: boolean } }> {
     try {
+      // Search for relevant books
+      const searchResults = await this.searchBooks(query);
+      const searchResultsText = searchResults.books.length > 0
+        ? searchResults.books.map((book: Book) => `${book.title} by ${book.author} (${book.year})`).join('\n')
+        : 'No relevant books found.';
+
+      // Construct the prompt
+      const prompt = `You are a helpful library assistant. Use the following information to answer the user's query:
+
+${searchResultsText}
+
+${conversationHistory.length > 0 ? `Previous conversation:\n${conversationHistory.join('\n')}\n` : ''}
+
+User's query: ${query}
+
+${userWantsSuggestions ? 'You should suggest relevant books from the search results.' : 'Do not suggest books unless specifically asked.'}
+
+You should also not suggest books that are not relevant to the user's query.
+
+Please provide a helpful response that directly addresses the user's query.`;
+
       // Get response from Gemini
-      const result = await this.model.generateContent(prompt);
+      const result = await this.model.generateContent({
+        contents: [{
+          parts: [{ text: prompt }],
+          role: 'user'
+        }],
+        generationConfig: {
+          temperature: 0.0,
+        }
+      });
       const response = result.response.text();
 
-      return response;
+      return {
+        response,
+        debug: {
+          prompt,
+          geminiResponse: response,
+          searchResults: searchResultsText,
+          conversationHistory: conversationHistory.join('\n'),
+          userWantsSuggestions
+        }
+      };
     } catch (error) {
-      console.error("Error processing query with Gemini:", error);
-      return `I'm sorry, I encountered an error while processing your question: "${query}". Please try again with a different question.`;
+      console.error('Error processing query:', error);
+      throw error;
+    }
+  }
+
+  private async handleGeminiError(query: string, error: unknown): Promise<string> {
+    try {
+      // Create a specific error handling prompt
+      const errorPrompt = `
+You are an expert librarian assistant. The user asked: "${query}"
+
+I encountered an error while processing this query. Please provide a helpful response that:
+1. Acknowledges the user's question
+2. Explains that we're having some technical difficulties
+3. Suggests alternative ways to help the user
+4. Maintains a helpful and professional tone
+
+Error details: ${error instanceof Error ? error.message : 'Unknown error'}
+`;
+
+      const result = await this.model.generateContent(errorPrompt);
+      return result.response.text();
+    } catch (fallbackError) {
+      // If even the error handling fails, return a basic message
+      return `I apologize, but I'm having trouble processing your question right now. Could you please try rephrasing your question or ask something else?`;
     }
   }
 
@@ -67,13 +122,22 @@ class GenericGeminiInterpreter {
    */
   private createPrompt(
     query: string,
-    searchResults: SearchResult | null,
-    previousContext: string
+    searchResults: SearchResults | null,
+    previousContext: string,
+    userWantsSuggestions: boolean
   ): string {
     // Convert book data to a more readable format for Gemini, if available
     let booksSection = "";
     if (searchResults && searchResults.books && searchResults.books.length > 0) {
-      booksSection = "SEARCH RESULTS:\n" +
+      booksSection = 
+        "IMOPRTANT: the following search results are the most relevant search results based on the user query. " + 
+        "They are not all the books in the library. " +
+        "You should use these results to help the user find the book they are looking for. " +
+        "You should not make up your own results or suggest books that are not in the search results. " +
+        "You should also not suggest books that are not relevant to the user's query. " +
+        "You should also not suggest books that are not in the search results. " +
+        "You should also not suggest books that are not relevant to the user's query.\n\n " +
+        "SEARCH RESULTS:\n" +
         searchResults.books.map((book, index) => {
           return `Book ${index + 1}:
 Title: ${book.title}
@@ -91,6 +155,11 @@ Description: ${book.description}
       contextSection = "PREVIOUS CONVERSATION:\n" + previousContext + "\n\n";
     }
 
+    // Add user preference about suggestions
+    const suggestionInstruction = userWantsSuggestions
+      ? ""
+      : "IMPORTANT: The user has requested NOT to receive book suggestions unless they explicitly ask for them. Do NOT provide recommendations or suggestions unless the user specifically asks for them.";
+
     // Base system instructions that work for any query type
     const baseInstructions = `
 You are an expert librarian assistant for a digital library catalog.
@@ -98,6 +167,8 @@ You are an expert librarian assistant for a digital library catalog.
 Your role is to help users find books and answer questions about the catalog.
 Always maintain a helpful, knowledgeable, and conversational tone.
 Be concise but thorough in your responses.
+
+${suggestionInstruction}
 
 USER QUERY:
 "${query}"
@@ -113,7 +184,7 @@ Focus on providing detailed information about the specific book the user is aski
 If the book is in the search results, provide comprehensive details about it.
 If the book is not in the search results, politely inform the user and suggest similar books if possible.
 `;
-    } else if (this.isRecommendationQuery(query)) {
+    } else if (this.isRecommendationQuery(query) && userWantsSuggestions) {
       return baseInstructions + `
 Provide personalized book recommendations based on the user's query and available search results.
 For each recommendation, briefly explain why you're suggesting it.
@@ -134,9 +205,12 @@ Focus on their writing style, major works, and influence.
     } else if (searchResults && searchResults.books.length > 0) {
       // Generic search result interpretation
       return baseInstructions + `
-Analyze these search results in relation to the user's query.
-Highlight the most relevant books that match what the user is looking for.
-Be conversational and helpful in your response.
+If the user is asking for recommendations or for a book search, then:
+- Analyze these search results in relation to the user's query.
+- Highlight the most relevant books that match what the user is looking for.
+- Be conversational and helpful in your response.
+
+Otherwise, keep your response to the user's query as helpful as possible.
 `;
     } else {
       // No search results or general query
@@ -210,6 +284,10 @@ Keep your response conversational and natural.
       lowerQuery.includes("books by")
     );
   }
+
+  private async searchBooks(query: string): Promise<SearchResults> {
+    return this.catalog.searchBooks(query);
+  }
 }
 
 /**
@@ -221,6 +299,7 @@ class EnhancedLibraryCatalog {
   private interpreter: GenericGeminiInterpreter;
   private queryAnalyzer: GeminiQueryAnalyzer;
   private conversationHistory: string = "";
+  private userWantsSuggestions: boolean = false;
 
   constructor(
     astraToken: string,
@@ -228,144 +307,65 @@ class EnhancedLibraryCatalog {
     geminiApiKey: string
   ) {
     this.db = new AstraDB(astraToken, astraEndpoint);
-    this.interpreter = new GenericGeminiInterpreter(geminiApiKey);
+    this.interpreter = new GenericGeminiInterpreter(geminiApiKey, this);
     this.queryAnalyzer = new GeminiQueryAnalyzer(geminiApiKey);
   }
 
-  // Initialize the catalog collection
   async initialize(): Promise<void> {
     try {
-      // Try to get existing collection or create a new one
-      try {
-        this.collection = await this.db.collection('books_catalog');
-        console.log('Connected to existing books_catalog collection');
-      } catch (error) {
-        console.log('Creating new books_catalog collection');
-        this.collection = await this.db.createCollection('books_catalog', {
-          vector: {
-            dimensions: 1536, // Adjust based on your embedding model
-            metric: 'cosine'
-          }
-        });
-      }
+      this.collection = await this.db.collection('books_catalog');
     } catch (error) {
-      console.error('Error initializing catalog:', error);
-      throw new Error('Failed to initialize the catalog');
+      console.error('Error initializing collection:', error);
+      throw error;
     }
   }
 
-  // Process a user query, regardless of what it's asking
-  async processUserQuery(query: string): Promise<string> {
-    console.log(`Processing user query: ${query}`);
-
+  async searchBooks(query: string): Promise<SearchResults> {
     try {
-      // Check if the query is about adding a book
-      if (this.isAddBookQuery(query)) {
-        // Try to extract book information
-        const bookData = await this.extractBookDataFromText(query);
-
-        if (bookData) {
-          // Add the book
-          const bookId = await this.addBook(bookData);
-
-          // Return a confirmation message
-          return `I've added "${bookData.title}" by ${bookData.author} (${bookData.year}) to the library catalog. The book has been assigned ID: ${bookId}. Is there anything else you'd like to know about this book or would you like to add another one?`;
-        } else {
-          // Could not extract book data
-          return `I couldn't extract complete book information from your message. To add a book, please include the title, author, publication year, and a brief description. For example: "Add the book 'Dune' by Frank Herbert, published in 1965. It's a science fiction novel about a desert planet with valuable resources."`;
+      // Use Gemini to analyze the query
+      const analysis = await this.queryAnalyzer.analyzeQuery(query);
+      
+      // Search based on the analysis
+      const results = await this.collection.find(
+        analysis.filters,
+        {
+          sort: { $vectorize: analysis.search_terms } as any,
+          limit: 5
         }
-      }
+      ).toArray();
+      
+      return {
+        books: results as Book[],
+        query: analysis.original_query
+      };
+    } catch (error) {
+      console.error('Error searching books:', error);
+      return {
+        books: [],
+        query: query
+      };
+    }
+  }
 
-      // Then, try a generic search for the query
-      let searchResults: SearchResult | null = null;
-
-      // If it's not a meta-question about the conversation, search for books
-      if (!this.isMetaConversationalQuery(query)) {
-        searchResults = await this.searchBooks(query);
-      }
-
-      // Use Gemini to interpret the query and generate a response
+  async processUserQuery(query: string): Promise<{ response: string; debug: { prompt: string; geminiResponse: string; searchResults: string; conversationHistory: string; userWantsSuggestions: boolean } }> {
+    try {
+      // Process the query
       const response = await this.interpreter.processQuery(
         query,
-        searchResults,
-        this.conversationHistory
+        this.conversationHistory.split('\n'),
+        this.userWantsSuggestions
       );
 
       // Update conversation history
-      this.updateConversationHistory(query, response);
+      this.conversationHistory += `\nUser: ${query}\nAssistant: ${response.response}`;
 
       return response;
     } catch (error) {
-      console.error('Error processing query:', error);
-      return `I'm sorry, I encountered an error while processing your question. Please try again with a different question.`;
+      console.error('Error processing user query:', error);
+      throw error;
     }
   }
 
- 
-/**
- * Search books using the appropriate embedding type
- */
-async searchBooks(query: string): Promise<SearchResult> {
-  try {
-    // Use Gemini to analyze the query
-    const analysis = await this.queryAnalyzer.analyzeQuery(query);
-    console.log('Query analysis:', JSON.stringify(analysis, null, 2));
-    
-    // Add embedding type to the filters
-    const filters = {
-      ...analysis.filters,
-      embedding_type: analysis.embedding_type
-    };
-    
-    // Perform vector search with filters
-    const results = await this.collection.find(
-      filters,
-      {
-        sort: { $vectorize: analysis.search_terms } as any,
-        limit: 5 // Adjust based on needs
-      }
-    ).toArray();
-    
-    return {
-      books: results,
-      query: analysis.original_query
-    };
-  } catch (error) {
-    console.error('Error searching books:', error);
-    throw error;
-  }
-}
-
-  // Check if the query is about the conversation itself rather than the books
-  private isMetaConversationalQuery(query: string): boolean {
-    const lowerQuery = query.toLowerCase();
-    return (
-      lowerQuery.includes("what did i just ask") ||
-      lowerQuery.includes("what were we talking about") ||
-      lowerQuery.includes("can you summarize our conversation") ||
-      lowerQuery.includes("what have we discussed") ||
-      lowerQuery.includes("repeat what you just said")
-    );
-  }
-
-  // Update the conversation history
-  private updateConversationHistory(query: string, response: string): void {
-    // Add the latest exchange to the history
-    this.conversationHistory += `User: ${query}\nAssistant: ${response}\n\n`;
-
-    // Limit history length to avoid context overflow
-    const maxHistoryLength = 2000; // Adjust based on token limits
-    if (this.conversationHistory.length > maxHistoryLength) {
-      // Keep only the most recent exchanges
-      const exchanges = this.conversationHistory.split('\n\n');
-      this.conversationHistory = exchanges.slice(-5).join('\n\n') + '\n\n';
-    }
-  }
-
-
-  /**
-   * Add a book to the catalog
-   */
   async addBook(book: Book): Promise<string> {
     try {
       // Insert the book into the collection
@@ -376,79 +376,77 @@ async searchBooks(query: string): Promise<SearchResult> {
 
       const bookId = response.insertedId as string;
 
-      // Generate embeddings for the book
-      await this.generateEmbeddingsForBook(book, bookId);
-
-      console.log(`Added book "${book.title}" with ID ${bookId}`);
-      return bookId;
+      try {
+        // Generate embeddings for the book
+        await this.generateEmbeddingsForBook(book, bookId);
+        console.log(`Added book "${book.title}" with ID ${bookId}`);
+        return bookId;
+      } catch (embeddingError) {
+        console.error('Error generating embeddings:', embeddingError);
+        // Still return the book ID even if embedding generation fails
+        return bookId;
+      }
     } catch (error) {
       console.error('Error adding book:', error);
-      throw error;
+      throw new Error(`Failed to add book: ${error instanceof Error ? error.message : 'Unknown error'}`);
     }
   }
 
-  /**
-   * Generate embeddings for a book
-   */
   private async generateEmbeddingsForBook(book: Book, bookId: string): Promise<void> {
-    try {
-      // Create title+author embedding entry
-      await this.collection.insertOne({
-        ...book,
-        _id: undefined, // Let AstraDB generate a new ID
-        source_id: bookId,
-        embedding_type: 'title_author',
-        $vectorize: `${book.title} ${book.author}`,
-      });
+    const embeddingTypes = [
+      {
+        type: 'title_author',
+        text: `${book.title} ${book.author}`
+      },
+      {
+        type: 'description',
+        text: book.description
+      },
+      {
+        type: 'combined',
+        text: `${book.title} ${book.author} ${book.description} ${book.genre || ''}`
+      }
+    ];
 
-      // Create description embedding entry
-      await this.collection.insertOne({
-        ...book,
-        _id: undefined, // Let AstraDB generate a new ID
-        source_id: bookId,
-        embedding_type: 'description',
-        $vectorize: book.description,
-      });
-
-      // Create combined embedding entry
-      await this.collection.insertOne({
-        ...book,
-        _id: undefined, // Let AstraDB generate a new ID
-        source_id: bookId,
-        embedding_type: 'combined',
-        $vectorize: `${book.title} ${book.author} ${book.description} ${book.genre || ''}`,
-      });
-    } catch (error) {
-      console.error('Error generating embeddings for book:', error);
-      throw error;
+    for (const embedding of embeddingTypes) {
+      try {
+        await this.collection.insertOne({
+          ...book,
+          _id: undefined,
+          source_id: bookId,
+          embedding_type: embedding.type,
+          $vectorize: embedding.text,
+        });
+      } catch (error) {
+        console.error(`Error creating ${embedding.type} embedding:`, error);
+        // Continue with other embeddings even if one fails
+        continue;
+      }
     }
   }
 
-  /**
-   * Extract book data from natural language input
-   */
   async extractBookDataFromText(text: string): Promise<Book | null> {
     try {
-      // Use Gemini to extract book information
       const prompt = `
-    You are a librarian assistant tasked with extracting book information from user input.
-    
-    Extract the following information from the text below:
-    - title: The title of the book
-    - author: The author of the book
-    - year: The publication year (as a number)
-    - description: A description or summary of the book
-    - genre: The genre of the book (if mentioned)
-    - publisher: The publisher of the book (if mentioned)
-    
-    Respond ONLY with a valid JSON object containing these fields.
-    If any required field (title, author, year, description) is missing, respond with null for that field.
-    If the input doesn't appear to be about adding a book, respond with an empty JSON object {}.
-    
-    User input: "${text}"
-    `;
+You are a librarian assistant tasked with extracting book information from user input.
 
-    const responseText = await this.interpreter.processQuery(prompt, null, "");
+Extract the following information from the text below:
+- title: The title of the book
+- author: The author of the book
+- year: The publication year (as a number)
+- description: A description or summary of the book
+- genre: The genre of the book (if mentioned)
+- publisher: The publisher of the book (if mentioned)
+
+Respond ONLY with a valid JSON object containing these fields.
+If any required field (title, author, year, description) is missing, respond with null for that field.
+If the input doesn't appear to be about adding a book, respond with an empty JSON object {}.
+
+User input: "${text}"
+`;
+
+      const result = await this.interpreter.processQuery(prompt, [], true);
+      const responseText = result.response;
 
       // Extract the JSON from the response
       const jsonMatch = responseText.match(/\{[\s\S]*\}/);
@@ -468,16 +466,6 @@ async searchBooks(query: string): Promise<SearchResult> {
       console.error('Error extracting book data:', error);
       return null;
     }
-  }
-
-  // Helper method to detect add book queries
-  private isAddBookQuery(query: string): boolean {
-    const lowerQuery = query.toLowerCase();
-    return (
-      (lowerQuery.includes("add") || lowerQuery.includes("create") || lowerQuery.includes("insert")) &&
-      (lowerQuery.includes("book") || lowerQuery.includes("novel") || lowerQuery.includes("title")) &&
-      (lowerQuery.includes("by") || lowerQuery.includes("author"))
-    );
   }
 }
 
@@ -514,7 +502,7 @@ async function main() {
   for (const query of queries) {
     console.log(`\nUser: ${query}`);
     const response = await catalog.processUserQuery(query);
-    console.log(`System: ${response}`);
+    console.log(`System: ${response.response}`);
   }
 }
 

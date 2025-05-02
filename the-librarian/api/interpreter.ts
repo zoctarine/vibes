@@ -75,7 +75,15 @@ export class GeminiQueryAnalyzer {
     `;
 
     try {
-      const result = await this.model.generateContent(prompt);
+      const result = await this.model.generateContent({
+        contents: [{
+          parts: [{ text: prompt }],
+          role: 'user'
+        }],
+        generationConfig: {
+          temperature: 0.0,
+        }
+      });
       const responseText = result.response.text();
       
       // Extract the JSON from the response

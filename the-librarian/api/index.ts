@@ -180,11 +180,12 @@ app.post('/api/query', async (req: Request, res: Response): Promise<any> => {
     }
     
     // Process the query
-    const response = await globalCatalog!.processUserQuery(query);
+    const result = await globalCatalog!.processUserQuery(query);
     
     res.status(200).json({
       query,
-      response
+      response: result.response,
+      debug: result.debug
     });
   } catch (error) {
     console.error('Error processing stateless query:', error);
