@@ -3,6 +3,7 @@
 
 import { AstraDB, Collection } from '@datastax/astra-db-ts';
 import { GoogleGenerativeAI } from '@google/generative-ai';
+import { GeminiQueryAnalyzer } from './interpreter';
 
 // Types
 interface Book {
@@ -34,7 +35,7 @@ class GenericGeminiInterpreter {
 
     // Initialize the model for result interpretation
     this.model = this.genAI.getGenerativeModel({
-      model: "gemini-1.5-pro"
+      model: "gemini-2.0-flash"
     });
   }
 
@@ -218,6 +219,7 @@ class EnhancedLibraryCatalog {
   private db: AstraDB;
   private collection!: Collection;
   private interpreter: GenericGeminiInterpreter;
+  private queryAnalyzer: GeminiQueryAnalyzer;
   private conversationHistory: string = "";
 
   constructor(
@@ -227,6 +229,7 @@ class EnhancedLibraryCatalog {
   ) {
     this.db = new AstraDB(astraToken, astraEndpoint);
     this.interpreter = new GenericGeminiInterpreter(geminiApiKey);
+    this.queryAnalyzer = new GeminiQueryAnalyzer(geminiApiKey);
   }
 
   // Initialize the catalog collection
@@ -298,26 +301,40 @@ class EnhancedLibraryCatalog {
     }
   }
 
-  // Perform a generic search for books
-  private async searchBooks(query: string): Promise<SearchResult> {
-    try {
-      // Perform vector search with no specific filters
-      const results = await this.collection.find(
-        { $vector: query }, // No filters
-        {
-          limit: 5 // Adjust based on needs
-        }
-      ).toArray();
-
-      return {
-        books: results,
-        query: query
-      };
-    } catch (error) {
-      console.error('Error searching books:', error);
-      throw error;
-    }
+ 
+/**
+ * Search books using the appropriate embedding type
+ */
+async searchBooks(query: string): Promise<SearchResult> {
+  try {
+    // Use Gemini to analyze the query
+    const analysis = await this.queryAnalyzer.analyzeQuery(query);
+    console.log('Query analysis:', JSON.stringify(analysis, null, 2));
+    
+    // Add embedding type to the filters
+    const filters = {
+      ...analysis.filters,
+      embedding_type: analysis.embedding_type
+    };
+    
+    // Perform vector search with filters
+    const results = await this.collection.find(
+      filters,
+      {
+        sort: { $vectorize: analysis.search_terms } as any,
+        limit: 5 // Adjust based on needs
+      }
+    ).toArray();
+    
+    return {
+      books: results,
+      query: analysis.original_query
+    };
+  } catch (error) {
+    console.error('Error searching books:', error);
+    throw error;
   }
+}
 
   // Check if the query is about the conversation itself rather than the books
   private isMetaConversationalQuery(query: string): boolean {
