@@ -1,0 +1,12 @@
+{
+  "name": "library-chat-console",
+  "version": "1.0.0",
+  "description": "Console client for the Library Chat application",
+  "main": "chat-client.js",
+  "scripts": {
+    "start": "node chat-client.js"
+  },
+  "dependencies": {
+    "node-fetch": "^2.6.7"
+  }
+} 
