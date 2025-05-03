@@ -31,6 +31,6 @@ function ask() {
   });
 }
 
-console.log('Welcome to the Library Chat! Type your questions about books.');
+console.log('Welcome to the Biblio Whispertron! Type your questions about books.');
 console.log('Type "exit", "quit", or "bye" to quit.\n');
 ask(); 

@@ -101,7 +101,7 @@ function App() {
     <ThemeProvider theme={theme}>
       <Container maxWidth="md" sx={{ height: '100vh', display: 'flex', flexDirection: 'column', py: 2 }}>
         <Typography variant="h4" gutterBottom sx={{ textAlign: 'center', color: 'primary.main' }}>
-          Library Chat
+         Biblio Whispertron
         </Typography>
         
         <Paper 

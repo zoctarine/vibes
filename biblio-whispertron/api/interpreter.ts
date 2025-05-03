@@ -65,10 +65,10 @@ export class GeminiQueryAnalyzer {
       "filters": {
         // include only the applicable filters
         "year": number or {"$lt": number} or {"$gt": number},
-        "genre": "string" or {"$regex": "string"},
-        "author": "string" or {"$regex": "string"},
-        "title": "string" or {"$regex": "string"},
-        "publisher": "string" or {"$regex": "string"}
+        "genre": "string",
+        "author": "string" ,
+        "title": "string" ,
+        "publisher": "string"
       },
       "search_terms": "string"
     }

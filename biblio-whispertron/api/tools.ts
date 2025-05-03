@@ -31,59 +31,56 @@ class GenericGeminiInterpreter {
   constructor(apiKey: string, catalog: EnhancedLibraryCatalog) {
     const genAI = new GoogleGenerativeAI(apiKey);
     this.model = genAI.getGenerativeModel({
-       model: "gemini-2.0-flash" 
-      });
+      model: "gemini-2.0-flash"
+    });
     this.catalog = catalog;
   }
 
-  /**
-   * Process any type of user query and retrieve appropriate search results
-   */
   async processQuery(
     query: string,
     conversationHistory: string[] = [],
-    userWantsSuggestions: boolean = false
+    userWantsSuggestions: boolean = false,
+    temperature: number = 0.7
   ): Promise<{ response: string; debug: { prompt: string; geminiResponse: string; searchResults: string; conversationHistory: string; userWantsSuggestions: boolean } }> {
+    console.log(`[processQuery] Processing query:`, query);
     try {
       // Search for relevant books
-      const searchResults = await this.searchBooks(query);
-      const searchResultsText = searchResults.books.length > 0
-        ? searchResults.books.map((book: Book) => `${book.title} by ${book.author} (${book.year})`).join('\n')
-        : 'No relevant books found.';
+      const searchResults = await this.catalog.searchBooks(query);
+      console.log(`[processQuery] Search results:`, searchResults);
 
       // Construct the prompt
-      const prompt = `You are a helpful library assistant. Use the following information to answer the user's query:
+      const prompt = `
+You are a language model with access to a vector database representing a library's book catalog. You can use Retrieval-Augmented Generation (RAG) to answer user questions about books in the catalog and provide book suggestions only when specifically asked. You should not suggest books unless the user explicitly requests a recommendation or asks for books related to a specific topic. If a user asks for a book suggestion, use RAG to find relevant books from the catalog and provide a brief description of each. If you do not have the information to answer a question or find relevant books in the catalog, state that you do not know or that the book is not in the catalog.
 
-${searchResultsText}
+Conversation History:
+${conversationHistory.join('\n')}
 
-${conversationHistory.length > 0 ? `Previous conversation:\n${conversationHistory.join('\n')}\n` : ''}
+Search Results:
+${JSON.stringify(searchResults, null, 2)}
 
-User's query: ${query}
+User Preferences:
+- User wants suggestions: ${userWantsSuggestions}
 
-${userWantsSuggestions ? 'You should suggest relevant books from the search results.' : 'Do not suggest books unless specifically asked.'}
+User Query: "${query}"
+`;
 
-You should also not suggest books that are not relevant to the user's query.
-
-Please provide a helpful response that directly addresses the user's query.`;
-
-      // Get response from Gemini
+      // Generate response
       const result = await this.model.generateContent({
-        contents: [{
-          parts: [{ text: prompt }],
-          role: 'user'
-        }],
+        contents: [{ role: "user", parts: [{ text: prompt }] }],
         generationConfig: {
-          temperature: 0.0,
+          temperature: temperature,
         }
       });
+
       const response = result.response.text();
+      console.log(`[processQuery] Gemini response:`, response);
 
       return {
         response,
         debug: {
           prompt,
           geminiResponse: response,
-          searchResults: searchResultsText,
+          searchResults: JSON.stringify(searchResults),
           conversationHistory: conversationHistory.join('\n'),
           userWantsSuggestions
         }
@@ -162,7 +159,15 @@ Description: ${book.description}
 
     // Base system instructions that work for any query type
     const baseInstructions = `
-You are an expert librarian assistant for a digital library catalog.
+You are a language model with access to a vector database representing a library's book catalog. 
+You can use Retrieval-Augmented Generation (RAG) to answer user questions about books in the catalog and provide
+ book suggestions only when specifically asked. 
+ You should not suggest books unless the user explicitly requests a recommendation or asks for books related to 
+ a specific topic. 
+ If a user asks for a book suggestion, use the search results below to find relevant books from the catalog 
+ and provide a brief descriptions for the ones that best fit the user query.
+  If you do not have the information to answer a question or find relevant books in the catalog,
+   state that you do not know or that the book is not in the catalog.
 
 Your role is to help users find books and answer questions about the catalog.
 Always maintain a helpful, knowledgeable, and conversational tone.
@@ -284,10 +289,6 @@ Keep your response conversational and natural.
       lowerQuery.includes("books by")
     );
   }
-
-  private async searchBooks(query: string): Promise<SearchResults> {
-    return this.catalog.searchBooks(query);
-  }
 }
 
 /**
@@ -321,9 +322,11 @@ class EnhancedLibraryCatalog {
   }
 
   async searchBooks(query: string): Promise<SearchResults> {
+    console.log(`[searchBooks] Searching for:`, query);
     try {
       // Use Gemini to analyze the query
       const analysis = await this.queryAnalyzer.analyzeQuery(query);
+      console.log(`[searchBooks] Query analysis:`, analysis);
       
       // Search based on the analysis
       const results = await this.collection.find(
@@ -333,6 +336,7 @@ class EnhancedLibraryCatalog {
           limit: 5
         }
       ).toArray();
+      console.log(`[searchBooks] Results:`, results);
       
       return {
         books: results as Book[],
@@ -348,6 +352,7 @@ class EnhancedLibraryCatalog {
   }
 
   async processUserQuery(query: string): Promise<{ response: string; debug: { prompt: string; geminiResponse: string; searchResults: string; conversationHistory: string; userWantsSuggestions: boolean } }> {
+    console.log(`[processUserQuery] User query:`, query);
     try {
       // Process the query
       const response = await this.interpreter.processQuery(
@@ -367,6 +372,7 @@ class EnhancedLibraryCatalog {
   }
 
   async addBook(book: Book): Promise<string> {
+    console.log(`[addBook] Adding book:`, book);
     try {
       // Insert the book into the collection
       const response = await this.collection.insertOne({
