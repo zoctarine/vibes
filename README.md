@@ -21,6 +21,7 @@ In the Vibes/ folder, you'll find a random collection of apps:
 - [memory-port-vault](/memory-port-vault/README.md) A document storage for memory-port (organized per projects)
 - fiction-writer/ tools for writing fiction
     - [text-statistics](/fiction-writer/text-statistics/README.md): small MCP server to count words, pages, reading times, etc
+- [biblio-whispertron](/biblio-whispertron/README.md): a RAG enhanced conversational AI library assistant that can manage a book catalog, provide recommendations, and engage in detailed discussions about books and authors. 
 - [portfolio](/the-vibes-portfolio/README.md): a simple portfolio site
 
 coming soon:
