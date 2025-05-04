@@ -221,17 +221,8 @@ curl -X POST http://localhost:3000/api/sessions/l8fj2p3k1m5n7q9r/messages \
 - Conversational book recommendations
 - Book catalog management
 - Author and genre information
-- Reading history tracking
-- Natural language queries
-- Persistent chat sessions
+- Natural language querie
 
-## 🔮 Future Improvements
-
-- Integration with public book APIs
-- User accounts and personalized recommendations
-- Book rating and review system
-- Reading progress tracking
-- E-book integration
 
 ## 📄 License
 
